@@ -76,12 +76,15 @@ function startGame() {
     removeCardFromDeck(cardFromDeck.id),
     addCardToPile(cardFromDeck)
   ]);
-  computePlayerOptions(cardFromDeck);
+  computePlayerOptions();
 }
 
-function computePlayerOptions(card) {
-  if (card.rank === '2') {
-    const curDraw = getDraw(store.getState());
+// Update on-screen guides - including last move and suggestions for the player.
+function computePlayerOptions() {
+  const state = store.getState();
+  const pileCard = selectTopCardFromPile(state);
+  if (pileCard.rank === '2') {
+    const curDraw = getDraw(state);
     const newDraw = curDraw === 1 ? curDraw + 1 : curDraw + 2;
     store.dispatch([
       setComputerMove(`Computer played a '2'.`),
@@ -89,20 +92,43 @@ function computePlayerOptions(card) {
       setDraw(newDraw),
       setExpected({ rank: ['2'], suit: null })
     ]);
-  } else if (card.rank === '8') {
-    const computerHand = getComputerHand(store.getState());
+  } else if (pileCard.rank === '8') {
+    const computerHand = getComputerHand(state);
     const nextSuit = chooseNextSuit(computerHand);
     store.dispatch([
-      setComputerMove(`Computer played a '8'. Computer selects ${nextSuit} as the next suit.`),
+      setComputerMove(`Computer played an '8'. Computer selects ${nextSuit} as the next suit.`),
       setGuide(`Play an '8' or ${nextSuit}.`),
       setExpected({ rank: ['8'], suit: nextSuit })
     ]);
   } else {
-    const rank = card.rank;
-    const suit = card.suit;
+    const { rank, suit } = pileCard;
     store.dispatch([
-      setComputerMove(`Computer played a ${cardToString(card)}.`),
+      setComputerMove(`Computer played a ${cardToString(pileCard)}.`),
       setGuide(`Play a '${rank}', a ${suit}, or an '8'.`),
+      setExpected({ rank: ['8', rank], suit })
+    ]);
+  }
+}
+
+// Only update draw/expected fields (and guide field if 8 is played)
+function computeComputerOptions(nextSuit) {
+  const state = store.getState();
+  const pileCard = selectTopCardFromPile(state);
+  if (pileCard.rank === '2') {
+    const curDraw = getDraw(state);
+    const newDraw = curDraw === 1 ? curDraw + 1 : curDraw + 2;
+    store.dispatch([
+      setDraw(newDraw),
+      setExpected({ rank: ['2'], suit: null })
+    ]);
+  } else if (pileCard.rank === '8') {
+    store.dispatch([
+      setGuide(`Play an '8' or ${nextSuit}.`),
+      setExpected({ rank: ['8'], suit: nextSuit })
+    ]);
+  } else {
+    const { rank, suit } = pileCard;
+    store.dispatch([
       setExpected({ rank: ['8', rank], suit })
     ]);
   }
@@ -112,7 +138,7 @@ function computePlayerOptions(card) {
 // Player's values are checked against state.info.expected.
 // Expected values are set by computePlayerOptions().
 function validatePlayerChoice(choice) {
-  const { suit: expSuit, rank: expRank } = getExpected(store.getState());
+  const { rank: expRank, suit: expSuit } = getExpected(store.getState());
   if (expSuit === null) {
     return expRank.includes(choice.rank);
   } else {
@@ -126,7 +152,7 @@ function validatePlayerChoice(choice) {
 //   If computer wins, game remains locked, and player must start new game to unlock.
 // If player's card count goes to 0, player wins. In this case, return true.
 // If player hasn't won, initiate computer's play.
-function handlePlayerPlay(card) {
+function handlePlayerPlay(card, nextSuit = null) {
   // Note: setLock() prevents player from making another move until computer has played
   store.dispatch([
     setLock(),
@@ -140,14 +166,15 @@ function handlePlayerPlay(card) {
       setGuide('Player wins!')
     ]);
     return true;
+  }
+  // Player still has cards.
+  computeComputerOptions(nextSuit);
+  if (POST_PLAYER_DELAY === 0) {
+    // Run synchronously. Use for command-line mode.
+    performComputerPlay();
   } else {
-    if (POST_PLAYER_DELAY === 0) {
-      // Run synchronously. Use for command-line mode.
-      performComputerPlay();
-    } else {
-      // Run asynchronously (with delay)
-      TIMER_HANDLE = setTimeout(performComputerPlay, POST_PLAYER_DELAY);
-    }
+    // Run asynchronously (with delay)
+    TIMER_HANDLE = setTimeout(performComputerPlay, POST_PLAYER_DELAY);
   }
   return false;
 }
@@ -164,6 +191,16 @@ function handlePlayerDraw(drawCnt) {
     if (deckCnt === 0) {
       replenishDeck();
     }
+  }
+  // Reset drawCnt
+  const pileCard = selectTopCardFromPile(store.getState());
+  const { rank, suit } = pileCard;
+  // If pileCard === 8, keep previous expected values
+  if (pileCard.rank !== '8') {
+    store.dispatch([
+      setDraw(1),
+      setExpected({ rank: ['8', rank], suit })
+    ]);
   }
   if (POST_PLAYER_DELAY === 0) {
     // Run synchronously. Use for command-line mode.
@@ -193,6 +230,8 @@ function handleComputerPlay(card) {
     ]);
     return true;
   }
+  // Update guide info
+  computePlayerOptions();
   return false;
 }
 
@@ -209,14 +248,31 @@ function handleComputerDraw(drawCnt) {
       replenishDeck();
     }
   }
+  // Update on-screen info
+  const pileCard = selectTopCardFromPile(store.getState());
+  // If card === 8, previous instructions still
+  if (pileCard.rank === '8') {
+    store.dispatch([
+      setComputerMove(`Computer drew ${drawCnt}.`)
+      // Previous guide/draw/expected should still be valid
+    ]);
+  } else {
+    const { rank, suit } = pileCard;
+    store.dispatch([
+      setComputerMove(`Computer drew ${drawCnt}.`),
+      setGuide(`Play a '${rank}', a ${suit}, or an '8'.`),
+      setDraw(1),
+      setExpected({ rank: ['8', rank], suit })
+    ]);
+  }
 }
 
 function performComputerPlay() {
   const state = store.getState();
-  const cardFromPile = selectTopCardFromPile(state);
+  const { rank: expRank, suit: expSuit } = getExpected(state);
   const computerHand = getComputerHand(state);
   const drawCnt = getDraw(state);
-  const nextPlay = computeNextPlay(computerHand, cardFromPile);
+  const nextPlay = computeNextPlay(computerHand, expRank, expSuit);
   let computerWins = false;
   if (nextPlay) {
     computerWins = handleComputerPlay(nextPlay);
@@ -228,8 +284,6 @@ function performComputerPlay() {
     // Game over
     return;
   } else {
-    // Update guide info
-    computePlayerOptions(nextPlay);
     // Unlock game to allow player to play
     store.dispatch([
       clearLock()

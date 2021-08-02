@@ -34,7 +34,12 @@ const infoSlice = createSlice({
       state.locked = false;
     },
     resetInfo(state, action) {
-      state = { ...initialState, expected: { ...initialState.expected } };
+      // state = { ...initialState, expected: { ...initialState.expected } };
+      state.computerMove = '';
+      state.guide = '';
+      state.draw = 1;
+      state.expected = { rank: null, suit: null };
+      state.locked = false;
     }
   }
 });

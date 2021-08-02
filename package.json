@@ -16,9 +16,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "cross-env REACT_APP_POST_PLAYER_DELAY=0 react-scripts test",
     "eject": "react-scripts eject",
-    "cmdline": "cross-env REACT_APP_POST_PLAYER_DELAY=10 node -r esm -r dotenv/config test.js"
+    "cmdline": "cross-env REACT_APP_POST_PLAYER_DELAY=0 node -r esm -r dotenv/config ./src/store/logic.debug.js"
   },
   "eslintConfig": {
     "extends": "react-app"

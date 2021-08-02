@@ -31,13 +31,9 @@ export const countCards = (state) => selectIds(state).length;
 
 // NEXT PLAY LOGIC
 export const getMostFrequentSuit = (hand) => {
-  console.log('getMostFrequentSuit', hand);
   const suitMap = Object.values(hand).reduce(
     (acc, card) => {
-      console.log('getMostFrequentSuit', acc);
-      console.log('getMostFrequentSuit', card);
       acc[card.suit].value++;
-      console.log('getMostFrequentSuit', acc);
       return acc;
     },
     {
@@ -50,11 +46,11 @@ export const getMostFrequentSuit = (hand) => {
   const highestFreqSuit = Object.values(suitMap).reduce(
     (maxObj, suitObj) => maxObj.value > suitObj.value ? maxObj : suitObj
   );
-  return highestFreqSuit;
+  return highestFreqSuit.suit;
 }
 
 const hasRank = (hand, rank) => {
-  return Object.values(hand).find(card => card.rank === rank);
+  return Object.values(hand).find(card => rank.includes(card.rank));
 }
 
 const hasSuit = (hand, suit) => {
@@ -62,22 +58,18 @@ const hasSuit = (hand, suit) => {
 }
 
 // Returns the next card to play. (Note, computeNextPlay() does not remove card from hand.)
-export const computeNextPlay = (hand, pileCard) => {
+export const computeNextPlay = (hand, expRank, expSuit) => {
   let potentialPlay;
-  if (pileCard.rank === '2') {
+  if (expRank.includes('2') && expSuit === null) {
     // Play another 2 if possible
     potentialPlay = hasRank(hand, '2');
     return potentialPlay; // either 2 or undefined
   }
   // Try to match suit
-  potentialPlay = hasSuit(hand, pileCard.suit);
+  potentialPlay = hasSuit(hand, expSuit);
   if (potentialPlay) return potentialPlay;
-  // Try to match rank
-  potentialPlay = hasRank(hand, pileCard.rank);
-  if (potentialPlay) return potentialPlay;
-  // What about an eight?
-  potentialPlay = hasRank(hand, '8');
-  return potentialPlay; // either 8 or undefined
+  // Try to match rank or 8
+  return potentialPlay = hasRank(hand, expRank); // either rank, 8, or undefined
 }
 
 export default computerSlice.reducer;
