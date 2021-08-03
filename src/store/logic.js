@@ -11,7 +11,7 @@ import {
   addCard as addCardToPile,
   removeAll as clearPile,
   selectTopCard as selectTopCardFromPile,
-  selectEntities as getPile
+  selectAll as getPile
 } from '../store/slices/pileSlice';
 import {
   addCard as addCardToComputer,
@@ -29,9 +29,9 @@ import {
   countCards as playerHandSize
 } from '../store/slices/playerSlice';
 import {
-  setComputerMove, setGuide, setDraw, resetDraw,
+  setComputerMove, setGuide, setDraw,
   setExpected, setLock, clearLock, resetInfo,
-  getComputerMove, getGuide, getDraw, getExpected, getLock
+  getGuide, getDraw, getExpected
 } from '../store/slices/infoSlice';
 import {
   cardToString
@@ -40,7 +40,7 @@ const INITIAL_CARDS_PER_PLAYER = 7;
 // After player's turn, insert some delay so player can see their card on pile,
 // before executing computer's play.
 // For command-line version of app, REACT_APP_POST_PLAYER_DELAY is set to 0 (in package.json)
-const POST_PLAYER_DELAY = Number(process.env.REACT_APP_POST_PLAYER_DELAY || 1000); 
+const POST_PLAYER_DELAY = Number(process.env.REACT_APP_POST_PLAYER_DELAY || 3000);
 let TIMER_HANDLE;
 
 function startGame() {
@@ -181,6 +181,7 @@ function handlePlayerPlay(card, nextSuit = null) {
 
 // Draw ${drawCnt} cards from deck
 function handlePlayerDraw(drawCnt) {
+  store.dispatch(setLock());
   for (let idx = 0; idx < drawCnt; idx++) {
     const cardFromDeck = selectTopCardFromDeck(store.getState());
     store.dispatch([
@@ -292,7 +293,14 @@ function performComputerPlay() {
 }
 
 function replenishDeck() {
-
+  const state = store.getState();
+  const topCardFromPile = selectTopCardFromPile(state);
+  const pile = getPile(state);
+  store.dispatch([ clearPile(), addCardToPile(topCardFromPile) ]);
+  store.dispatch([
+    setDeck(pile.filter(card =>card.id !== topCardFromPile.id)),
+    shuffleDeck()
+  ]);
 }
 
 export {

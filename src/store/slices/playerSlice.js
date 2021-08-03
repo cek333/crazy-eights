@@ -24,7 +24,8 @@ export const {
 export const {
   selectIds,
   selectById,
-  selectEntities
+  selectEntities,
+  selectAll
 } = playerAdapter.getSelectors(state => state.player);
 // Custom Selectrs
 export const countCards = (state) => selectIds(state).length;

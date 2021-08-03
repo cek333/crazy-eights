@@ -21,9 +21,16 @@ export const {
 export const {
   selectIds,
   selectById,
-  selectEntities
+  selectEntities,
+  selectAll
 } = pileAdapter.getSelectors(state => state.pile);
 // For pile, top card is last card in array
-export const selectTopCard = (state) => selectById(state, state.pile.ids[state.pile.ids.length - 1]);
+export const selectTopCard = (state) => {
+  if (state.pile.ids.length > 0) {
+    return selectById(state, state.pile.ids[state.pile.ids.length - 1]);
+  } else {
+    return null;
+  }
+}
 
 export default pileSlice.reducer;
