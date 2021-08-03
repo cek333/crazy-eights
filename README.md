@@ -47,4 +47,4 @@ To run the project locally, first clone the project to your local machine.
 
 ## TRY IT
 
-The program has been deployed here.
+The program has been deployed [here](https://cek333.github.io/crazy-eights/).
