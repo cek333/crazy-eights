@@ -16,17 +16,17 @@ Playing a '2' forces the other player to draw two cards. Alternatively, the othe
 
 ## HOW TO PLAY
 
-![Crazy Eights Screenshot](assets/20210803_090206_crazy_eights_screenshot.png)
+![Crazy Eights Screenshot](src/assets/crazy_eights_screenshot.png)
 
 Click on the 'New Game' button to start a new game.
 
 To play, click on the card icons in the 'Player Cards' section or click on the draw button to draw a card.
 
-![draw button](assets/20210803_090528_crazy_eights_draw_button.png)
+![draw button](src/assets/crazy_eights_draw_button.png)
 
 If you play an eight, you'll be presented with a group of buttons to select the next suit.
 
-![suit selection buttons](assets/20210803_090713_crazy_eights_suit_selection.png)
+![suit selection buttons](src/assets/crazy_eights_suit_selection.png)
 
 Each card played will be displayed on top of the 'Pile'. After you draw or play a card, all your cards will be grayed-out for about 2-3 seconds until the Computer has finished playing. After the computer plays, the 'Guide' section will be updated to indicate what the Computer played, as well as instructions on what you can play next.
 
