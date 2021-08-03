@@ -1,0 +1,12 @@
+.flex-container {
+  display: flex;
+}
+
+.header h2 {
+  margin-right: 30px;
+}
+
+.center-row > div {
+  margin-right: 30px;
+  min-width: 150px;
+}

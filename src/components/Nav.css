@@ -1,0 +1,12 @@
+.active {
+  font-weight: bold;
+}
+
+nav a {
+  padding-right: 30px;
+  text-decoration: none;
+}
+
+nav {
+  border-bottom: 1px solid grey;
+}

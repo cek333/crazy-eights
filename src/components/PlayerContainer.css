@@ -1,0 +1,21 @@
+/* .flex-container defined in Games.css
+.flex-container {
+  display: flex;
+}
+*/
+
+.disabled {
+  background-color: rgba(0, 0, 0, 0.125);
+}
+
+.error {
+  color: red;
+}
+
+.btns > div {
+  margin-right: 30px;
+}
+
+.hide {
+  display: none;
+}
