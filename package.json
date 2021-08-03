@@ -8,17 +8,18 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "classnames": "^2.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "cross-env REACT_APP_POST_PLAYER_DELAY=0 react-scripts test",
-    "eject": "react-scripts eject",
-    "cmdline": "cross-env REACT_APP_POST_PLAYER_DELAY=0 node -r esm -r dotenv/config ./src/store/logic.debug.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
