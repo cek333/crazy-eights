@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/crazy-eights/static/css/main.57a4faa0.chunk.css",
+    "main.js": "/crazy-eights/static/js/main.474b2eff.chunk.js",
+    "main.js.map": "/crazy-eights/static/js/main.474b2eff.chunk.js.map",
+    "runtime-main.js": "/crazy-eights/static/js/runtime-main.17703f12.js",
+    "runtime-main.js.map": "/crazy-eights/static/js/runtime-main.17703f12.js.map",
+    "static/js/2.72dda48e.chunk.js": "/crazy-eights/static/js/2.72dda48e.chunk.js",
+    "static/js/2.72dda48e.chunk.js.map": "/crazy-eights/static/js/2.72dda48e.chunk.js.map",
+    "index.html": "/crazy-eights/index.html",
+    "static/css/main.57a4faa0.chunk.css.map": "/crazy-eights/static/css/main.57a4faa0.chunk.css.map",
+    "static/js/2.72dda48e.chunk.js.LICENSE.txt": "/crazy-eights/static/js/2.72dda48e.chunk.js.LICENSE.txt",
+    "static/media/crazy_eights_screenshot.cf46ac3a.png": "/crazy-eights/static/media/crazy_eights_screenshot.cf46ac3a.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.17703f12.js",
+    "static/js/2.72dda48e.chunk.js",
+    "static/css/main.57a4faa0.chunk.css",
+    "static/js/main.474b2eff.chunk.js"
+  ]
+}
