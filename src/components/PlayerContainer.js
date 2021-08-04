@@ -18,20 +18,24 @@ function PlayerContainer() {
   const [ errorMsg, setErrorMsg ] = useState(<>&nbsp;</>);
   const [ eightCard, setEightCard ] = useState(null);
 
+  // 'inputLocked' is true while computer plays.
+  // If 'eightCard' !== null, it means we need to select a suit.
+  //   Prevent clicking on cards until suit is chosen.
+  const cardsLocked = inputLocked || (eightCard !== null);
+
   const cardContainerClasses = classnames(
     'flex-container',
-    { disabled: inputLocked }
+    { disabled: cardsLocked }
   );
 
   const hideBtns = cards.length <= 0;
   const defaultBtnClasses = classnames({ hide: inputLocked || hideBtns || (eightCard !== null) });
   const suitSelBtnClasses = classnames({ hide: inputLocked || hideBtns || (eightCard === null) });
-  console.log('Classes:', defaultBtnClasses, suitSelBtnClasses, hideBtns, eightCard);
 
   function handlePlay(card) {
     // Clear previous error message
     setErrorMsg(<>&nbsp;</>);
-    if (inputLocked) {
+    if (cardsLocked) {
       return;
     }
     if (validatePlayerChoice(card)) {
