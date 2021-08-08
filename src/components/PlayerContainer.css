@@ -4,6 +4,10 @@
 }
 */
 
+.card-container {
+  flex-wrap: wrap;
+}
+
 .disabled {
   background-color: rgba(0, 0, 0, 0.125);
 }

@@ -24,7 +24,7 @@ function PlayerContainer() {
   const cardsLocked = inputLocked || (eightCard !== null);
 
   const cardContainerClasses = classnames(
-    'flex-container',
+    'flex-container', 'card-container',
     { disabled: cardsLocked }
   );
 
