@@ -31,7 +31,7 @@ import {
 import {
   setComputerMove, setGuide, setDraw,
   setExpected, setLock, clearLock, resetInfo,
-  getGuide, getDraw, getExpected
+  getDraw, getExpected
 } from '../store/slices/infoSlice';
 import {
   cardToString
@@ -220,19 +220,18 @@ function handleComputerPlay(card) {
     removeCardFromComputer(card.id),
     addCardToPile(card)
   ]);
+  // Update guide info
+  computePlayerOptions();
+  // Check if computer has won
   const state = store.getState()
   const cardCnt = computerHandSize(state);
   if (cardCnt === 0) {
-    // Update guide text to indicate that player has won
-    let guide = getGuide(state);
-    guide += ' Computer wins!';
+    // Update guide text to indicate that computer has won
     store.dispatch([
-      setGuide(guide)
+      setGuide('Computer wins!')
     ]);
     return true;
   }
-  // Update guide info
-  computePlayerOptions();
   return false;
 }
 
