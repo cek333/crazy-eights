@@ -490,3 +490,118 @@ describe('Reacting to Player', () => {
     expect(guide).toMatch(/Play a '3', a clubs, or an '8'/);
   });
 });
+describe('Play Winning Hand', () => {
+  const playerHand = [
+    { id: 16, suit: 'diamonds', rank: '3' },
+    { id: 17, suit: 'diamonds', rank: '4' }
+  ];
+  const computerHand = [
+    { id: 29, suit: 'clubs', rank: '3' },
+    { id: 32, suit: 'clubs', rank: '6' }
+  ];
+  const pileCard = { id: 42, suit: 'spades', rank: '3' };
+  const deck = [
+    { id: 31, suit: 'clubs', rank: '5' },
+    { id: 1, suit: 'hearts', rank: 'ace' },
+    { id: 7, suit: 'hearts', rank: '7' },
+  ];
+  beforeEach(() => {
+    store.dispatch([
+      resetInfo(),
+      clearPile(),
+      setDeck(deck),
+      setComputerHand(computerHand),
+      setPlayerHand(playerHand)
+    ]);
+  });
+  test('Player plays, Computer draws, Player plays winning hand', () => {
+    // Player plays 4 of diamonds
+    handlePlayerPlay(playerHand[1]);
+    // Computer draws
+    let state = store.getState();
+    let playerHandCnt = playerHandSize(state);
+    let computerHandCnt = computerHandSize(state);
+    let move = getComputerMove(state);
+    let guide = getGuide(state);
+    expect(playerHandCnt).toEqual(playerHand.length - 1);
+    expect(computerHandCnt).toEqual(computerHand.length + 1);
+    expect(move).toMatch(/Computer drew 1/);
+    expect(guide).toMatch(/Play a '4', a diamonds, or an '8'/);
+
+    // Player plays 3 of diamonds
+    const allowed = validatePlayerChoice(playerHand[0]);
+    expect(allowed).toBeTruthy();
+    handlePlayerPlay(playerHand[0]);
+    // Player wins
+    state = store.getState();
+    playerHandCnt = playerHandSize(state);
+    computerHandCnt = computerHandSize(state);
+    move = getComputerMove(state);
+    guide = getGuide(state);
+    expect(playerHandCnt).toEqual(0);
+    expect(computerHandCnt).toEqual(computerHand.length + 1);
+    expect(move).toMatch(/Computer drew 1/);
+    expect(guide).toMatch(/Player wins!/);
+  });
+  test('Player draws before Computer plays winning hand', () => {
+    // Player plays 3 of diamonds
+    handlePlayerPlay(playerHand[0]);
+    // Computer plays 3 of clubs
+    let state = store.getState();
+    let playerHandCnt = playerHandSize(state);
+    let computerHandCnt = computerHandSize(state);
+    let move = getComputerMove(state);
+    let guide = getGuide(state);
+    expect(playerHandCnt).toEqual(playerHand.length - 1);
+    expect(computerHandCnt).toEqual(computerHand.length - 1);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerHand[0])}`));
+    expect(guide).toMatch(/Play a '3', a clubs, or an '8'/);
+
+    // Player draws
+    handlePlayerDraw(1);
+    // Computer plays 6 of clubs
+    state = store.getState();
+    playerHandCnt = playerHandSize(state);
+    computerHandCnt = computerHandSize(state);
+    move = getComputerMove(state);
+    guide = getGuide(state);
+    expect(playerHandCnt).toEqual(playerHand.length - 1 + 1);
+    expect(computerHandCnt).toEqual(0);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerHand[1])}`));
+    expect(guide).toMatch(/Computer wins!/);
+  });
+  test('Player plays before Computer plays winning hand', () => {
+    // Set top of pile to 3 of spades
+    store.dispatch(addCardToPile(pileCard));
+    computePlayerOptions();
+    // Player has valid options, but draw card for testing purposes
+    // Player draws (5 of clubs from deck)
+    handlePlayerDraw(1);
+    // Computer plays 3 of clubs
+    let state = store.getState();
+    let playerHandCnt = playerHandSize(state);
+    let computerHandCnt = computerHandSize(state);
+    let move = getComputerMove(state);
+    let guide = getGuide(state);
+    expect(playerHandCnt).toEqual(playerHand.length + 1);
+    expect(computerHandCnt).toEqual(computerHand.length - 1);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerHand[0])}`));
+    expect(guide).toMatch(/Play a '3', a clubs, or an '8'/);
+
+    // Player plays 5 of clubs
+    const allowed = validatePlayerChoice(deck[0]);
+    expect(allowed).toBeTruthy();
+    handlePlayerPlay(deck[0]);
+    // Computer plays 6 of clubs
+    state = store.getState();
+    playerHandCnt = playerHandSize(state);
+    computerHandCnt = computerHandSize(state);
+    move = getComputerMove(state);
+    guide = getGuide(state);
+    expect(playerHandCnt).toEqual(playerHand.length + 1 - 1);
+    expect(computerHandCnt).toEqual(0);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerHand[1])}`));
+    expect(guide).toMatch(/Computer wins!/);
+  });
+
+});
