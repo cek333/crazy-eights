@@ -24,7 +24,6 @@ export const {
 export const {
   selectIds,
   selectById,
-  selectEntities,
   selectAll
 } = playerAdapter.getSelectors(state => state.player);
 // Custom Selectrs

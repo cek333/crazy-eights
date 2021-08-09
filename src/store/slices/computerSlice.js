@@ -24,14 +24,14 @@ export const {
 export const {
   selectIds,
   selectById,
-  selectEntities
+  selectAll
 } = computerAdapter.getSelectors(state => state.computer);
 // Custom Selectrs
 export const countCards = (state) => selectIds(state).length;
 
 // NEXT PLAY LOGIC
 export const getMostFrequentSuit = (hand) => {
-  const suitMap = Object.values(hand).reduce(
+  const suitMap = hand.reduce(
     (acc, card) => {
       acc[card.suit].value++;
       return acc;
@@ -50,11 +50,11 @@ export const getMostFrequentSuit = (hand) => {
 }
 
 const hasRank = (hand, rank) => {
-  return Object.values(hand).find(card => rank.includes(card.rank));
+  return hand.find(card => rank.includes(card.rank));
 }
 
 const hasSuit = (hand, suit) => {
-  return Object.values(hand).find(card => card.suit === suit);
+  return hand.find(card => card.suit === suit);
 }
 
 // Returns the next card to play. (Note, computeNextPlay() does not remove card from hand.)

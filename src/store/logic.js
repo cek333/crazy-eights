@@ -17,7 +17,7 @@ import {
   addCard as addCardToComputer,
   removeCard as removeCardFromComputer,
   removeAll as resetComputer,
-  selectEntities as getComputerHand,
+  selectAll as getComputerHand,
   countCards as computerHandSize,
   getMostFrequentSuit as chooseNextSuit,
   computeNextPlay

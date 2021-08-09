@@ -21,7 +21,6 @@ export const {
 export const {
   selectIds,
   selectById,
-  selectEntities,
   selectAll
 } = pileAdapter.getSelectors(state => state.pile);
 // For pile, top card is last card in array
