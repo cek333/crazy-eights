@@ -184,11 +184,32 @@ describe('Reacting to Dealer', () => {
     expect(move).toMatch(new RegExp(`played a ${cardToString(computerHand[1])}`));
     expect(guide).toMatch(/Play a '3', a clubs, or an '8'/);
   });
-  /*
   test('Dealer plays a Q, Player skipped, Computer plays', () => {
+    const firstCard = { id: 51, suit: 'spades', rank: 'queen' };
+    store.dispatch(addCardToPile(firstCard));
+    computePlayerOptions();
+    let state = store.getState();
+    let move = getComputerMove(state);
+    let guide = getGuide(state);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(firstCard)}`));
+    expect(guide).toMatch(/Computer gets to play again/);
 
+    // Player skips a turn
+    // In cmdline/test version (initiate computer play manually).
+    //   Skip implemented by drawing 0 cards.
+    //   In react/ui version, computer play automatically initiated after delay. (Not tested here.)
+    handlePlayerDraw(0);
+    // Computer plays 9 of spades
+    state = store.getState();
+    const playerHandCnt = playerHandSize(state);
+    const computerHandCnt = computerHandSize(state);
+    move = getComputerMove(state);
+    guide = getGuide(state);
+    expect(playerHandCnt).toEqual(playerHand.length);
+    expect(computerHandCnt).toEqual(computerHand.length - 1);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerHand[6])}`));
+    expect(guide).toMatch(/Play a '9', a spades, or an '8'/);
   });
-  */
   test('Dealer plays non-special card, Player draws, Computer plays', () => {
     const firstCard = { id: 40, suit: 'spades', rank: 'ace' };
     store.dispatch(addCardToPile(firstCard));
@@ -244,7 +265,7 @@ describe('Reacting to Player', () => {
     { id: 17, suit: 'diamonds', rank: '4' },
     { id: 28, suit: 'clubs', rank: '2' },
     { id: 31, suit: 'clubs', rank: '5' },
-    { id: 38, suit: 'clubs', rank: 'queen' },
+    { id: 25, suit: 'diamonds', rank: 'queen' },
     { id: 41, suit: 'spades', rank: '2' },
     { id: 47, suit: 'spades', rank: '8' }
   ];
@@ -260,7 +281,7 @@ describe('Reacting to Player', () => {
   const computerDrawHand = [
     { id: 3, suit: 'hearts', rank: '3' },
     { id: 5, suit: 'hearts', rank: '5' },
-    { id: 13, suit: 'hearts', rank: 'king' },
+    { id: 38, suit: 'clubs', rank: 'queen' },
     { id: 29, suit: 'clubs', rank: '3' },
     { id: 32, suit: 'clubs', rank: '6' },
     { id: 33, suit: 'clubs', rank: '7' },
@@ -436,11 +457,51 @@ describe('Reacting to Player', () => {
     expect(move).toMatch(new RegExp(`played a ${cardToString(computerHand[6])}`));
     expect(guide).toMatch(/Play a '9', a spades, or an '8'/);
   });
-  /*
-  test('Player plays a Q, Computer skipped, Player plays, Computer plays', () => {
+  test('Player plays a Q, Computer skipped, Computer plays Q, Player skipped', () => {
+    store.dispatch(setComputerHand(computerDrawHand));
+    // Player plays Q of diamonds
+    handlePlayerPlay(playerHand[4]);
+    // Computer forced to skip a turn
+    let state = store.getState();
+    let playerHandCnt = playerHandSize(state);
+    let computerHandCnt = computerHandSize(state);
+    let move = getComputerMove(state);
+    let guide = getGuide(state);
+    expect(playerHandCnt).toEqual(playerHand.length - 1);
+    expect(computerHandCnt).toEqual(computerDrawHand.length + 0);
+    expect(move).toMatch(/Player gets to play again/);
+    expect(guide).toMatch(/Play a 'queen', a diamonds, or an '8'/);
 
+    // Player plays 2 of clubs (invalid play)
+    const allowed = validatePlayerChoice(playerHand[2]);
+    expect(allowed).toBeFalsy();
+    // Player has valid options but draw card for testing purposes.
+    handlePlayerDraw(1);
+    // Computer plays queen of clubs
+    state = store.getState();
+    playerHandCnt = playerHandSize(state);
+    computerHandCnt = computerHandSize(state);
+    move = getComputerMove(state);
+    guide = getGuide(state);
+    expect(playerHandCnt).toEqual(playerHand.length - 1 + 1);
+    expect(computerHandCnt).toEqual(computerDrawHand.length + 0 - 1);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerDrawHand[2])}`));
+    expect(guide).toMatch(/Computer gets to play again/);
+
+    // Player skips a turn (because computer played a queen).
+    //   Skip is implemented by drawing 0 cards.
+    handlePlayerDraw(0);
+    // Computer plays a 3 of clubs
+    state = store.getState();
+    playerHandCnt = playerHandSize(state);
+    computerHandCnt = computerHandSize(state);
+    move = getComputerMove(state);
+    guide = getGuide(state);
+    expect(playerHandCnt).toEqual(playerHand.length - 1 + 1 + 0);
+    expect(computerHandCnt).toEqual(computerHand.length + 0 - 1 - 1);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerDrawHand[3])}`));
+    expect(guide).toMatch(/Play a '3', a clubs, or an '8'/);
   });
-  */
   test('Player plays non-special card, Computer draws, Player plays, Computer plays', () => {
     store.dispatch(setComputerHand(computerDrawHand));
     // Player plays 4 of diamonds
