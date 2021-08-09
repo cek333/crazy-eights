@@ -77,6 +77,10 @@ function startGame() {
     addCardToPile(cardFromDeck)
   ]);
   computePlayerOptions();
+  if ((cardFromDeck.rank === 'queen') && (POST_PLAYER_DELAY !== 0)) {
+    // In cmd-line mode, calling program must manually initiate computer 2nd play.
+    dispatchAsyncComputerPlay();
+  }
 }
 
 // Update on-screen guides - including last move and suggestions for the player.
@@ -99,6 +103,14 @@ function computePlayerOptions() {
       setComputerMove(`Computer played an '8'. Computer selects ${nextSuit} as the next suit.`),
       setGuide(`Play an '8' or ${nextSuit}.`),
       setExpected({ rank: ['8'], suit: nextSuit })
+    ]);
+  } else if (pileCard.rank === 'queen') {
+    const { rank, suit } = pileCard;
+    store.dispatch([
+      setLock(),
+      setComputerMove(`Computer played a ${cardToString(pileCard)}.`),
+      setGuide('Computer gets to play again.'),
+      setExpected({ rank: ['8', rank], suit })
     ]);
   } else {
     const { rank, suit } = pileCard;
@@ -125,6 +137,14 @@ function computeComputerOptions(nextSuit) {
     store.dispatch([
       setGuide(`Play an '8' or ${nextSuit}.`),
       setExpected({ rank: ['8'], suit: nextSuit })
+    ]);
+  } else if (pileCard.rank === 'queen') {
+    // When queen played, the guide info is for the player's 2nd play
+    const { rank, suit } = pileCard;
+    store.dispatch([
+      setComputerMove('Player gets to play again.'),
+      setGuide(`Play a '${rank}', a ${suit}, or an '8'.`),
+      setExpected({ rank: ['8', rank], suit })
     ]);
   } else {
     const { rank, suit } = pileCard;
@@ -169,12 +189,13 @@ function handlePlayerPlay(card, nextSuit = null) {
   }
   // Player still has cards.
   computeComputerOptions(nextSuit);
-  if (POST_PLAYER_DELAY === 0) {
-    // Run synchronously. Use for command-line mode.
-    performComputerPlay();
+  if (card.rank === 'queen') {
+    // Unlock game to allow player to play
+    store.dispatch([
+      clearLock()
+    ]);
   } else {
-    // Run asynchronously (with delay)
-    TIMER_HANDLE = setTimeout(performComputerPlay, POST_PLAYER_DELAY);
+    dispatchComputerPlay();
   }
   return false;
 }
@@ -203,13 +224,7 @@ function handlePlayerDraw(drawCnt) {
       setExpected({ rank: ['8', rank], suit })
     ]);
   }
-  if (POST_PLAYER_DELAY === 0) {
-    // Run synchronously. Use for command-line mode.
-    performComputerPlay();
-  } else {
-    // Run asynchronously (with delay)
-    TIMER_HANDLE = setTimeout(performComputerPlay, POST_PLAYER_DELAY);
-  }
+  dispatchComputerPlay();
 }
 
 // Move card from computer's hand to pile
@@ -267,6 +282,20 @@ function handleComputerDraw(drawCnt) {
   }
 }
 
+function dispatchComputerPlay() {
+  if (POST_PLAYER_DELAY === 0) {
+    // Run synchronously. Use for command-line mode.
+    performComputerPlay();
+  } else {
+    // Run asynchronously (with delay)
+    TIMER_HANDLE = setTimeout(performComputerPlay, POST_PLAYER_DELAY);
+  }
+}
+
+function dispatchAsyncComputerPlay() {
+  TIMER_HANDLE = setTimeout(performComputerPlay, POST_PLAYER_DELAY);
+}
+
 function performComputerPlay() {
   const state = store.getState();
   const { rank: expRank, suit: expSuit } = getExpected(state);
@@ -276,6 +305,12 @@ function performComputerPlay() {
   let computerWins = false;
   if (nextPlay) {
     computerWins = handleComputerPlay(nextPlay);
+    // If computer plays queen, computer gets to play again.
+    if (!computerWins && (nextPlay.rank === 'queen') && (POST_PLAYER_DELAY !== 0)) {
+      // In cmd-line mode, calling program must manually initiate computer 2nd play.
+      dispatchAsyncComputerPlay();
+      return; // return and skip unlock. Unlock after computer's next play.
+    }
   } else {
     // No suitable play found. (nextPlay is falsy/undefined). Draw card.
     handleComputerDraw(drawCnt);
