@@ -281,10 +281,10 @@ describe('Reacting to Player', () => {
   const computerDrawHand = [
     { id: 3, suit: 'hearts', rank: '3' },
     { id: 5, suit: 'hearts', rank: '5' },
-    { id: 38, suit: 'clubs', rank: 'queen' },
     { id: 29, suit: 'clubs', rank: '3' },
     { id: 32, suit: 'clubs', rank: '6' },
     { id: 33, suit: 'clubs', rank: '7' },
+    { id: 38, suit: 'clubs', rank: 'queen' },
     { id: 48, suit: 'spades', rank: '9' }
   ];
   beforeEach(() => {
@@ -318,7 +318,7 @@ describe('Reacting to Player', () => {
     let move = getComputerMove(state);
     let guide = getGuide(state);
     expect(playerHandCnt).toEqual(playerHand.length - 1);
-    expect(computerHandCnt).toEqual(computerHand.length + 2);
+    expect(computerHandCnt).toEqual(computerDrawHand.length + 2);
     expect(move).toMatch(/Computer drew 2/);
     expect(guide).toMatch(/Play a '2', a clubs, or an '8'/);
 
@@ -333,8 +333,8 @@ describe('Reacting to Player', () => {
     move = getComputerMove(state);
     guide = getGuide(state);
     expect(playerHandCnt).toEqual(playerHand.length - 1 - 1);
-    expect(computerHandCnt).toEqual(computerHand.length + 2 - 1);
-    expect(move).toMatch(new RegExp(`played a ${cardToString(computerHand[2])}`));
+    expect(computerHandCnt).toEqual(computerDrawHand.length + 2 - 1);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerDrawHand[2])}`));
     expect(guide).toMatch(/Play a '3', a clubs, or an '8'/);
   });
   test('Player plays a 2, Computer plays a 2, Player plays a 2, Computer draws, Player plays, Computer plays', () => {
@@ -393,7 +393,7 @@ describe('Reacting to Player', () => {
     let move = getComputerMove(state);
     let guide = getGuide(state);
     expect(playerHandCnt).toEqual(playerHand.length - 1);
-    expect(computerHandCnt).toEqual(computerHand.length + 1);
+    expect(computerHandCnt).toEqual(computerDrawHand.length + 1);
     expect(move).toMatch(/Computer drew 1/);
     expect(guide).toMatch(/Play an '8' or diamonds/);
 
@@ -408,7 +408,7 @@ describe('Reacting to Player', () => {
     move = getComputerMove(state);
     guide = getGuide(state);
     expect(playerHandCnt).toEqual(playerHand.length - 1 - 1);
-    expect(computerHandCnt).toEqual(computerHand.length + 1 - 1);
+    expect(computerHandCnt).toEqual(computerDrawHand.length + 1 - 1);
     expect(move).toMatch(new RegExp(`played a ${cardToString(computerDrawHand[0])}`));
     expect(guide).toMatch(/Play a '3', a hearts, or an '8'/);
   });
@@ -485,7 +485,7 @@ describe('Reacting to Player', () => {
     guide = getGuide(state);
     expect(playerHandCnt).toEqual(playerHand.length - 1 + 1);
     expect(computerHandCnt).toEqual(computerDrawHand.length + 0 - 1);
-    expect(move).toMatch(new RegExp(`played a ${cardToString(computerDrawHand[2])}`));
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerDrawHand[5])}`));
     expect(guide).toMatch(/Computer gets to play again/);
 
     // Player skips a turn (because computer played a queen).
@@ -498,8 +498,8 @@ describe('Reacting to Player', () => {
     move = getComputerMove(state);
     guide = getGuide(state);
     expect(playerHandCnt).toEqual(playerHand.length - 1 + 1 + 0);
-    expect(computerHandCnt).toEqual(computerHand.length + 0 - 1 - 1);
-    expect(move).toMatch(new RegExp(`played a ${cardToString(computerDrawHand[3])}`));
+    expect(computerHandCnt).toEqual(computerDrawHand.length + 0 - 1 - 1);
+    expect(move).toMatch(new RegExp(`played a ${cardToString(computerDrawHand[2])}`));
     expect(guide).toMatch(/Play a '3', a clubs, or an '8'/);
   });
   test('Player plays non-special card, Computer draws, Player plays, Computer plays', () => {
@@ -513,7 +513,7 @@ describe('Reacting to Player', () => {
     let move = getComputerMove(state);
     let guide = getGuide(state);
     expect(playerHandCnt).toEqual(playerHand.length - 1);
-    expect(computerHandCnt).toEqual(computerHand.length + 1);
+    expect(computerHandCnt).toEqual(computerDrawHand.length + 1);
     expect(move).toMatch(/Computer drew 1/);
     expect(guide).toMatch(/Play a '4', a diamonds, or an '8'/);
 
@@ -531,7 +531,7 @@ describe('Reacting to Player', () => {
     move = getComputerMove(state);
     guide = getGuide(state);
     expect(playerHandCnt).toEqual(playerHand.length - 1 - 1);
-    expect(computerHandCnt).toEqual(computerHand.length + 1 - 1);
+    expect(computerHandCnt).toEqual(computerDrawHand.length + 1 - 1);
     expect(move).toMatch(new RegExp(`played a ${cardToString(computerDrawHand[0])}`));
     expect(guide).toMatch(/Play a '3', a hearts, or an '8'/);
   });
