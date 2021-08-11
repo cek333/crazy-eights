@@ -13,7 +13,7 @@ function About() {
       <h2>Crazy Eights Card Game</h2>
       <p className='sub-heading'>by Cecil King</p>
 
-      <p>This card game app was built as part of the <a href='https://mintbean.io/' target='_blank' rel='noopener noreferrer'>Mintbean</a> 'Hiring Hackathon for Jr Web Devs' (Jul 27, 2021 to Aug 3, 2021). The front-end react/redux app implements a modified version of the Crazy Eights card game.</p>
+      <p>This card game app was built as part of the <a href='https://mintbean.io/' target='_blank' rel='noopener noreferrer'>Mintbean</a> 'Hiring Hackathon for Jr Web Devs' (Jul 27, 2021 to Aug 3, 2021). The front-end react/redux app implements a two-player version of the <a href='https://www.pagat.com/eights/crazy8s.html' target='_blank' rel='noopener noreferrer'>Crazy Eights</a> card game.</p>
 
       <h3>GAME RULES</h3>
 
@@ -25,7 +25,7 @@ function About() {
 
       <p>Playing a '2' forces the other player to draw two cards. Alternatively, the other player can counter with another '2' increasing the draw penalty to 4 cards. Players can continue to play '2's, increasing the draw penalty by 2 each time, until one player is out of '2's and forced to draw.</p>
 
-      <p>(In the <a href='https://www.pagat.com/eights/crazy8s.html' target='_blank' rel='noopener noreferrer'>2-player version of crazy eights</a>, the queen card can be used to force the other player to skip a turn, but that was not implemented as part of this hackaton.)</p>
+      <p>If you play the queen card, you get to play again, forcing the opposing player to skip a turn.</p>
 
       <h3>HOW TO PLAY</h3>
 
