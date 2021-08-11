@@ -1,6 +1,6 @@
 # CRAZY EIGHTS
 
-This card game app was built as part of the [Mintbean](https://mintbean.io/) 'Hiring Hackathon for Jr Web Devs' (Jul 27, 2021 to Aug 3, 2021). The front-end react/redux app implements a modified version of the Crazy Eights card game.
+This card game app was built as part of the [Mintbean](https://mintbean.io/) 'Hiring Hackathon for Jr Web Devs' (Jul 27, 2021 to Aug 3, 2021). The front-end react/redux app implements a two-player version of the [Crazy Eights](https://www.pagat.com/eights/crazy8s.html) card game.
 
 ## GAME RULES
 
@@ -12,7 +12,7 @@ You can play an '8' card on top of any card. The person who plays the '8' can th
 
 Playing a '2' forces the other player to draw two cards. Alternatively, the other player can counter with another '2' increasing the draw penalty to 4 cards. Players can continue to play '2's, increasing the draw penalty by 2 each time, until one player is out of '2's and forced to draw.
 
-(In the [2-player version of crazy eights](https://www.pagat.com/eights/crazy8s.html), the queen card can be used to force the other player to skip a turn, but that was not implemented as part of this hackaton.)
+If you play the queen card, you get to play again, forcing the opposing player to skip a turn.
 
 ## HOW TO PLAY
 
@@ -44,6 +44,10 @@ To run the project locally, first clone the project to your local machine.
 * `npm run test`:
   
   Launches the test runner in the interactive watch mode. The tests cover various scenarios to test the program's logic.
+
+* `npm run cmdline`:
+
+  Runs a command-line/terminal version of the crazy eights card game.
 
 ## TRY IT
 
