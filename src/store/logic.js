@@ -183,6 +183,7 @@ function handlePlayerPlay(card, nextSuit = null) {
   if (cardCnt === 0) {
     // Update guide text to indicate that player has won
     store.dispatch([
+      setComputerMove(''),
       setGuide('Player wins!')
     ]);
     return true;

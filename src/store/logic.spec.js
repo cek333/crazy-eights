@@ -601,7 +601,7 @@ describe('Play Winning Hand', () => {
     guide = getGuide(state);
     expect(playerHandCnt).toEqual(0);
     expect(computerHandCnt).toEqual(computerHand.length + 1);
-    expect(move).toMatch(/Computer drew 1/);
+    expect(move).toEqual('');
     expect(guide).toMatch(/Player wins!/);
   });
   test('Player draws before Computer plays winning hand', () => {
