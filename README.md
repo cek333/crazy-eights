@@ -47,7 +47,7 @@ To run the project locally, first clone the project to your local machine.
 
 * `npm run cmdline`:
 
-  Runs a command-line/terminal version of the crazy eights card game.
+  For kicks and giggles you can run a command-line/terminal version of the crazy eights card game.
 
 ## TRY IT
 
